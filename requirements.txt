@@ -1,0 +1,12 @@
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+streamlit
+joblib
+fastapi
+uvicorn
+requests
+python-dotenv
+supabase==1.0.0
