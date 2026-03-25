@@ -1,0 +1,31 @@
+# Project Summary: Cancer Production Model
+
+## Overview
+This is a comprehensive end-to-end machine learning project designed for Breast Cancer prediction. It covers the entire machine learning lifecycle, from data exploratory analysis and preprocessing to model training, creating web APIs, user interfaces, and containerized deployment.
+
+## Project Structure & Components
+
+### 1. Machine Learning Pipeline (`src/`, `models/`)
+- **Data Preprocessing & Engineering (`src/data_preprocessing.py`)**: Loads the Breast Cancer Wisconsin dataset, performs feature engineering (calculating compactness, symmetry ratios, etc.), and scales the data.
+- **Exploratory Data Analysis (`src/eda.py`, `notebooks/eda.ipynb`)**: Scripts and notebooks for analyzing dataset distributions and correlations.
+- **Feature Selection & Training (`src/feature_selection.py`, `src/model_training.py`)**: Selects the most impactful features and trains the classification model. 
+- **Saved Models (`models/`)**: Stores the serialized, deployment-ready artifacts (`best_model.joblib`, `scaler.joblib`, `feature_selector.joblib`).
+
+### 2. Web Interfaces & Backend APIs (`flask_ui/`, `backend/`, `app/`)
+- **Web UI (`flask_ui/`)**: A Flask-based web application with HTML templates (`index.html`) allowing users to interact with the model via a browser.
+- **Backend API (`backend/`)**: Contains backend routing and a `supabase_client.py`, indicating integration with Supabase for centralized database or authentication processes.
+
+### 3. Utility Scripts & Testing (`scripts/`, `tests/`)
+- **Scripts (`scripts/`)**: Command-line tools for local testing (`cli_predict.py`, `demo_prediction.py`) and API validation (`test_api.py`).
+- **Tests (`tests/`)**: Contains unit tests such as `test_flask_ui.py` to ensure the web application functions correctly.
+
+### 4. Deployment & Infrastructure
+- **Containerization**: Uses `Dockerfile` and `docker-compose.yml` to package the application and its environment for consistent deployments across different platforms.
+- **Dependencies**: Managed via `requirements.txt`.
+
+## Summary of the Flow
+1. **Data** is ingested from `sklearn.datasets`.
+2. **Model** is trained and serialized into the `models/` directory.
+3. **Application Servers** (Flask UI or backend REST API) load the serialized model to serve predictions.
+4. **Users** can interact either via the Flask Web UI, CLI scripts, or REST API calls.
+5. The entire ecosystem is easily deployable using **Docker**.

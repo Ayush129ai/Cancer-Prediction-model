@@ -10,3 +10,10 @@ uvicorn
 requests
 python-dotenv
 supabase==1.0.0
+mlflow
+prometheus-flask-exporter
+xgboost
+flask
+flask-sqlalchemy
+shap
+evidently

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancer Prediction Model</title>
+    <!-- Modern Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --primary-bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #111827;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --border-color: #e5e7eb;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+        }
+
+        .header-title {
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-subtitle {
+            color: #6b7280;
+            margin-bottom: 2.5rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        .card-header {
+            background-color: transparent;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.25rem 1.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            border-color: #d1d5db;
+            border-radius: 8px;
+            padding: 0.6rem 0.75rem;
+            font-size: 0.95rem;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            border-radius: 8px;
+            padding: 0.6rem 1.25rem;
+            font-weight: 600;
+            letter-spacing: 0.025em;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Custom Scrollbar for Features List */
+        .features-scroll {
+            max-height: 550px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+        
+        .features-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .features-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .features-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .table th {
+            font-weight: 600;
+            color: #4b5563;
+            border-bottom-width: 2px;
+            background-color: #f9fafb;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .table td {
+            vertical-align: middle;
+            font-size: 0.95rem;
+        }
+
+        .badge {
+            padding: 0.4em 0.8em;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .prediction-alert {
+            font-size: 1.05rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid px-4 px-lg-5">
+    <div class="text-center mb-5">
+        <h1 class="header-title"><i class="bi bi-activity text-primary me-2"></i> ML Diagnostic Dashboard</h1>
+        <p class="header-subtitle">Breast Cancer Explainable Prediction (XAI driven)</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-10">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show prediction-alert shadow-sm" role="alert">
+                    {% if category == 'success' %}
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                    {% else %}
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    {% endif %}
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="row justify-content-center g-4">
+        <!-- Form Section -->
+        <div class="col-lg-4 col-md-5">
+            <div class="card h-100">
+                <div class="card-header bg-white">
+                    <i class="bi bi-clipboard2-data text-primary"></i> Patient Data Input
+                </div>
+                <div class="card-body p-0">
+                    <form action="{{ url_for('index') }}" method="POST" id="prediction-form" class="p-4">
+                        <div class="mb-4">
+                            <label for="user_id" class="form-label">Patient / Record ID (Optional)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-person"></i></span>
+                                <input type="text" class="form-control border-start-0 ps-0" id="user_id" name="user_id" placeholder="e.g. PAT-10492">
+                            </div>
+                        </div>
+                        
+                        <hr class="text-muted opacity-25">
+                        
+                        <div class="features-scroll mb-4 mt-3">
+                            {% for feature in features %}
+                            <div class="mb-3">
+                                <label for="{{ feature }}" class="form-label text-capitalize d-flex justify-content-between">
+                                    <span>{{ feature.replace('_', ' ') }}</span>
+                                    <span class="text-secondary small fw-normal" title="Allowed Range">[{{ '%.2f'|format(feature_mins[feature]) }} - {{ '%.2f'|format(feature_maxs[feature]) }}]</span>
+                                </label>
+                                <input type="number" step="any" class="form-control" id="{{ feature }}" name="{{ feature }}" 
+                                       value="{{ '%.4f'|format(defaults[feature]) }}" 
+                                       min="{{ '%.4f'|format(feature_mins[feature]) }}" 
+                                       max="{{ '%.4f'|format(feature_maxs[feature]) }}" 
+                                       required>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2 d-flex justify-content-center align-items-center gap-2" id="predict-btn">
+                            <i class="bi bi-magic"></i> Analyze & Predict
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Section -->
+        <div class="col-lg-8 col-md-7">
+            <div class="card h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <div><i class="bi bi-clock-history text-primary"></i> Model Inference Timeline</div>
+                    <span class="badge bg-light text-dark border"><i class="bi bi-hdd-network"></i> Live</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0" id="history-table">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4">Timestamp</th>
+                                    <th>Patient ID</th>
+                                    <th>Diagnosis Prediction</th>
+                                    <th>Malignant (Cancer) Prob.</th>
+                                    <th>Benign Prob.</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in history %}
+                                <tr>
+                                    <td class="ps-4 text-muted small"><i class="bi bi-calendar2 me-1"></i> {{ record.timestamp.strftime('%y-%m-%d %H:%M') }}</td>
+                                    <td class="fw-medium">{{ record.user_id }}</td>
+                                    <td>
+                                        {% if record.label == 'Cancer' %}
+                                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25" style="padding: 0.5em 1em;"><i class="bi bi-exclamation-circle me-1"></i> Cancer Alert</span>
+                                        {% else %}
+                                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25" style="padding: 0.5em 1em;"><i class="bi bi-shield-check me-1"></i> No Cancer Alert</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span style="min-width: 45px;">{{ "%.1f"|format(record.probability_cancer * 100) }}%</span>
+                                            <div class="progress" style="height: 6px; width: 60px;">
+                                                <div class="progress-bar {% if record.probability_cancer > 0.5 %}bg-danger{% else %}bg-secondary opacity-50{% endif %}" role="progressbar" style="width: {{ record.probability_cancer * 100 }}%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ "%.1f"|format(record.probability_no_cancer * 100) }}%</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-5">
+                                        <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary opacity-50"></i>
+                                        No predictions in the historical ledger yet.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
